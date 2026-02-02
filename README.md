@@ -1,8 +1,42 @@
 # Algorithmic Trading System - ML-Enhanced Multi-Stock Portfolio
 
-A sophisticated algorithmic trading system that combines machine learning, regime detection, and multi-stock portfolio management to achieve **234% returns over 5 years** (46.8% CAGR) on NSE stocks.
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Validated: 2025](https://img.shields.io/badge/Validated-2025-brightgreen.svg)](PRODUCTION_SYSTEM.md)
 
-## 🎯 Key Achievements
+A sophisticated algorithmic trading system that combines machine learning, regime detection, and multi-stock portfolio management. **Phase 6A validated on 2025 out-of-sample data: 18.70% annual return** with realistic trading costs included.
+
+## 🚀 Quick Start
+
+```bash
+# Clone repository
+git clone https://github.com/BLx-Ankush/Trading-ML.git
+cd Trading-ML
+
+# Create virtual environment
+python -m venv venv
+.\venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run demo (no broker credentials needed)
+python quick_start_demo.py
+```
+
+## 📈 Latest Performance (Phase 6A - 2025 Validation)
+
+**Out-of-Sample Results (2025 unseen data):**
+- **Net Return:** 18.41% (Annualized: 18.70%)
+- **Win Rate:** 61.76% (21 wins, 13 losses)
+- **Sharpe Ratio:** 2.17
+- **Max Drawdown:** 2.71%
+- **Profit Factor:** 2.69
+- **Total Trades:** 34
+- **Deployment Status:** ✅ All 5 criteria PASSED
+
+## 🎯 Historical Performance (2020-2024 Training Data)
 
 - **234.39% Total Return** over 5 years (2020-2024)
 - **3.85% Monthly Return** (46% annualized)
