@@ -1,0 +1,43 @@
+backtest:
+  end_date: '2025-12-31'
+  start_date: '2025-01-01'
+portfolio:
+  brokerage_pct: 0.0004
+  enable_monthly_stop: true
+  enable_time_exit: false
+  enable_trading_costs: true
+  enable_trailing_stop: false
+  excluded_stocks:
+  - ICICIBANK.NS
+  initial_capital: 200000
+  max_portfolio_risk: 0.05
+  max_positions: 5
+  monthly_stop_loss: 0.1
+  risk_per_trade: 0.01
+  slippage_pct: 0.0025
+  stock_ml_thresholds:
+    ITC.NS: 0.4
+    KOTAKBANK.NS: 0.45
+  stt_pct: 0.001
+stocks:
+- RELIANCE.NS
+- TCS.NS
+- HDFCBANK.NS
+- INFY.NS
+- ICICIBANK.NS
+- HINDUNILVR.NS
+- ITC.NS
+- SBIN.NS
+- BHARTIARTL.NS
+- KOTAKBANK.NS
+- BAJFINANCE.NS
+- LT.NS
+- HCLTECH.NS
+- AXISBANK.NS
+- MARUTI.NS
+strategy:
+  enable_ml_filter: true
+  ml_model_path: data/models/lightgbm_entry_model.txt
+  ml_threshold: 0.3
+  regime_model_path: data/models/hmm_regime_model.pkl
+  use_regime_thresholds: false

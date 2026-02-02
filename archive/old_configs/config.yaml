@@ -1,0 +1,259 @@
+# Adaptive Edge Trading System Configuration
+
+# Trading Parameters
+trading:
+  capital: 200000  # Starting capital in INR
+  max_position_size: 0.10  # 10% of capital max
+  risk_per_trade: 0.01  # 1% risk per trade
+  min_risk_reward: 1.5  # Minimum R:R ratio
+  max_open_positions: 3
+  
+# Risk Management
+risk_management:
+  daily_loss_limit: 0.05  # 5%
+  weekly_loss_limit: 0.10  # 10%
+  monthly_loss_limit: 0.15  # 15%
+  single_trade_max_loss: 0.015  # 1.5%
+  consecutive_loss_limit: 5
+  max_drawdown_limit: 0.25  # 25%
+  
+  # Kill switch triggers
+  kill_switch:
+    enable: true
+    daily_loss_trigger: 0.05
+    system_error_trigger: true
+    api_failure_threshold: 3  # Consecutive API failures
+
+# Regime Detection (HMM)
+regime:
+  n_states: 3  # Trending, Ranging, High Volatility
+  lookback_days: 60
+  retrain_frequency: 30  # Retrain every 30 days
+  
+  features:
+    - returns
+    - volatility
+    - volume_ratio
+    - adx
+    - atr
+    
+  regime_mapping:
+    0: "trending"
+    1: "ranging"
+    2: "high_volatility"
+    
+  # Strategy allocation by regime
+  strategies:
+    trending: "momentum"
+    ranging: "mean_reversion"
+    high_volatility: "stay_out"
+
+# LightGBM Entry Filter
+lightgbm:
+  confidence_threshold: 0.65  # Only trade above this confidence
+  
+  features:
+    technical_indicators:
+      - rsi
+      - macd
+      - adx
+      - atr
+      - bollinger_bands
+      - ema_crossover
+    
+    price_features:
+      - distance_to_support
+      - distance_to_resistance
+      - pivot_points
+    
+    volume_features:
+      - volume_ratio
+      - obv  # On-Balance Volume
+      - volume_sma_ratio
+    
+  model_params:
+    n_estimators: 100
+    max_depth: 5
+    learning_rate: 0.05
+    num_leaves: 31
+    min_child_samples: 20
+    
+  training:
+    lookback_days: 252  # 1 year
+    validation_split: 0.2
+    retrain_frequency: 7  # Weekly retraining
+
+# GARCH Volatility Forecasting
+garch:
+  model_order: [1, 1]  # GARCH(1,1)
+  lookback_days: 60
+  forecast_horizon: 1  # 1-day ahead
+  update_frequency: 1  # Daily update
+  
+  # Position sizing multipliers
+  volatility_adjustment:
+    low_vol: 1.2   # Increase size by 20% in low vol
+    normal_vol: 1.0
+    high_vol: 0.5  # Reduce size by 50% in high vol
+    
+  thresholds:
+    low_vol_percentile: 30
+    high_vol_percentile: 70
+
+# Technical Indicators
+indicators:
+  rsi:
+    period: 14
+    overbought: 70
+    oversold: 30
+    
+  macd:
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+    
+  adx:
+    period: 14
+    trending_threshold: 25  # ADX > 25 = trending
+    
+  atr:
+    period: 14
+    
+  bollinger_bands:
+    period: 20
+    std_dev: 2
+    
+  ema:
+    short_period: 9
+    long_period: 21
+    
+  volume_sma:
+    period: 20
+
+# Strategy Parameters
+strategies:
+  momentum:
+    entry_conditions:
+      - "price > ema_long"
+      - "rsi < 70"
+      - "rsi > 40"
+      - "macd_signal == bullish"
+      - "volume_ratio > 1.2"
+    
+    exit_conditions:
+      - "stop_loss_hit"
+      - "take_profit_hit"
+      - "rsi > 75"
+      - "macd_signal == bearish"
+  
+  mean_reversion:
+    entry_conditions:
+      - "price_below_bollinger_lower"
+      - "rsi < 35"
+      - "distance_to_support < 0.02"  # Within 2% of support
+      - "volume_ratio > 1.0"
+    
+    exit_conditions:
+      - "stop_loss_hit"
+      - "price_above_bollinger_middle"
+      - "rsi > 50"
+
+# Execution Settings
+execution:
+  order_type: "LIMIT"  # LIMIT or MARKET
+  slippage_tolerance: 0.002  # 0.2%
+  order_timeout: 300  # 5 minutes
+  limit_order_offset: 0.001  # 0.1% better than market
+  
+  # Order validation
+  validate_before_execution:
+    - "check_daily_loss_limit"
+    - "check_position_limit"
+    - "check_margin_available"
+    - "check_market_hours"
+
+# Backtesting
+backtesting:
+  start_date: "2024-01-01"
+  end_date: "2025-12-31"
+  
+  # Realistic cost simulation
+  costs:
+    slippage: 0.001  # 0.1% per side
+    brokerage: 0.0003  # 0.03%
+    stt_tax: 0.00025  # 0.025%
+    transaction_charges: 0.0000345  # NSE charges
+    
+  # Performance metrics to track
+  metrics:
+    - "total_return"
+    - "sharpe_ratio"
+    - "sortino_ratio"
+    - "max_drawdown"
+    - "win_rate"
+    - "profit_factor"
+    - "avg_win_loss_ratio"
+
+# Data Sources
+data:
+  # Historical data
+  historical_source: "yahoo_finance"  # or broker API
+  timeframe: "1D"  # Daily data
+  
+  # Real-time data
+  realtime_source: "broker_api"
+  update_frequency: 60  # seconds
+  
+  # Data quality checks
+  quality_checks:
+    max_missing_days: 5
+    outlier_threshold: 5  # Standard deviations
+    stale_data_threshold: 600  # 10 minutes
+
+# Logging & Monitoring
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_to_file: true
+  log_to_console: true
+  log_directory: "logs"
+  
+  # What to log
+  log_types:
+    - "trades"
+    - "signals"
+    - "regime_changes"
+    - "errors"
+    - "system_health"
+    - "performance_metrics"
+
+# Alerts & Notifications
+alerts:
+  enable: true
+  
+  conditions:
+    - daily_loss_limit_reached
+    - system_error
+    - consecutive_losses
+    - unusual_drawdown
+    - successful_day  # When daily profit > 2%
+    
+  channels:
+    - email
+    # - sms  # Uncomment if configured
+    # - telegram  # Uncomment if configured
+
+# System Health Monitoring
+monitoring:
+  check_interval: 300  # 5 minutes
+  
+  metrics:
+    - "api_latency"
+    - "memory_usage"
+    - "cpu_usage"
+    - "order_execution_time"
+    - "data_staleness"
+    
+  thresholds:
+    max_api_latency: 2000  # ms
+    max_memory_usage: 80  # percent
+    max_order_time: 5000  # ms

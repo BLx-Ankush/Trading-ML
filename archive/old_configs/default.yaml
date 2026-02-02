@@ -1,0 +1,46 @@
+# Portfolio Trading System Configuration
+# Phase 5 Revised - Proven Strategy (234% return, 2.44 Sharpe)
+
+# Stock universe (NSE top stocks, diversified sectors)
+stocks:
+  - RELIANCE.NS      # Energy
+  - TCS.NS           # IT
+  - HDFCBANK.NS      # Banking
+  - INFY.NS          # IT
+  - ICICIBANK.NS     # Banking
+  - HINDUNILVR.NS    # FMCG
+  - ITC.NS           # FMCG
+  - SBIN.NS          # Banking
+  - BHARTIARTL.NS    # Telecom
+  - KOTAKBANK.NS     # Banking
+  - BAJFINANCE.NS    # Finance
+  - LT.NS            # Infrastructure
+  - HCLTECH.NS       # IT
+  - AXISBANK.NS      # Banking
+  - MARUTI.NS        # Automobile
+
+# Portfolio settings
+portfolio:
+  initial_capital: 200000        # Rs. 2 lakhs
+  max_positions: 5               # Max concurrent positions
+  risk_per_trade: 0.01          # 1% risk per trade
+  max_portfolio_risk: 0.05      # 5% total portfolio risk
+  
+  # Phase 5 Revised: Only portfolio circuit breaker
+  enable_trailing_stop: false   # Disabled - cuts winners short
+  enable_time_exit: false       # Disabled - forces premature exits
+  enable_monthly_stop: true     # Enabled - emergency brake
+  monthly_stop_loss: 0.10       # 10% monthly DD threshold
+
+# Strategy settings
+strategy:
+  ml_model_path: data/models/lightgbm_entry_model.txt
+  regime_model_path: data/models/hmm_regime_model.pkl
+  ml_threshold: 0.30            # Entry confidence threshold
+  enable_ml_filter: true        # Use ML filtering
+  use_regime_thresholds: false  # Use flat threshold
+
+# Backtest settings
+backtest:
+  start_date: '2020-01-01'
+  end_date: '2024-12-31'

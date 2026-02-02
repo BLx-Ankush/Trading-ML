@@ -1,0 +1,67 @@
+# Environment
+.env
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# Data files
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.csv
+*.parquet
+*.h5
+*.hdf5
+
+# Model files
+data/models/*
+!data/models/.gitkeep
+*.pkl
+*.joblib
+*.h5
+
+# Logs
+logs/*
+!logs/.gitkeep
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials
+*credentials*
+*secret*
+*token*
+
+# Backtest results
+backtest_results/*
+!backtest_results/.gitkeep
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation build
+docs/_build/
+site/
